@@ -1,34 +1,32 @@
 const { Router } = require("express");
-const { v4: uuidv4 } = require("uuid");
+const ProductService = require("../services/createProduct.service");
+const ProductsRepository = require("../repositories/products.repository");
+
+const productsRepository = new ProductsRepository();
+const productService = new ProductService(productsRepository);
 
 const routes = Router();
-const products = [];
 
 routes.get("/products", (req, res) => {
-  res.json(products);
+  res.json(productsRepository.getProducts());
 });
 
 routes.post("/products", (req, res) => {
-  const { name, description, price, quantity, image_url } = req.body;
+  try {
+    const { name, description, price, quantity, image_url } = req.body;
 
-  const isProductAlreadyCreated = products.find(product => product.name === name);
-  
-  if (isProductAlreadyCreated) {
-    return res.status(400).json({ message: "Product already exists" });
+    const newProduct = productService.execute({
+      name,
+      description,
+      price,
+      quantity,
+      image_url
+    });
+
+    return res.json(newProduct);
+  } catch (error) {
+    return res.json(error.message);
   }
-
-  products.push({
-    id: uuidv4(),
-    name,
-    description,
-    price,
-    quantity,
-    image_url,
-    createdAt: new Date(),
-    updatedAt: new Date()
-  });
-
-  return res.send();
 });
 
 module.exports = routes;
