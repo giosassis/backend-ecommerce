@@ -1,4 +1,5 @@
 const { v4: uuidv4 } = require("uuid");
+const AppError = require("../errors/AppError");
 
 class createProductService {
   constructor(productsRepository) {
@@ -6,11 +7,13 @@ class createProductService {
   }
 
   execute({ name, description, price, quantity, image_url }) {
-
-    const isProductAlreadyCreated = this.productsRepository.findProductByName(name)
+    const isProductAlreadyCreated =
+      this.productsRepository.findProductByName(name);
 
     if (isProductAlreadyCreated) {
-      throw new Error("Product already exists");
+      throw new AppError(
+        `Product ${name} already exists"Product already exists`
+      );
     }
 
     const newProduct = {
@@ -21,7 +24,7 @@ class createProductService {
       quantity,
       image_url,
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
 
     this.productsRepository.createProduct(newProduct);

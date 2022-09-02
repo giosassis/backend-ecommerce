@@ -20,7 +20,7 @@ routes.post("/products", (req, res) => {
       description,
       price,
       quantity,
-      image_url
+      image_url,
     });
 
     return res.json(newProduct);

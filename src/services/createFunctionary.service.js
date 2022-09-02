@@ -1,16 +1,16 @@
 const { v4: uuidv4 } = require("uuid");
-
+const AppError = require("../errors/AppError");
 class createFunctionaryService {
   constructor(functionaryRepository) {
-    this.functionaryRepository = functionaryRepository
+    this.functionaryRepository = functionaryRepository;
   }
 
   execute({ firstName, lastName, brithDate, adress, office, salary, email }) {
-
-    const functionaryAlreadyExists = this.functionaryRepository.findFunctionarytByEmail(email)
+    const functionaryAlreadyExists =
+      this.functionaryRepository.findFunctionarytByEmail(email);
 
     if (functionaryAlreadyExists) {
-      throw new Error("Employee already registered");
+      throw new AppError("Employee already registered");
     }
 
     const newFunctionary = {
@@ -22,7 +22,7 @@ class createFunctionaryService {
       office,
       salary,
       email,
-      hireDate: new Date()
+      hireDate: new Date(),
     };
 
     this.functionaryRepository.registerFunctionary(newFunctionary);
